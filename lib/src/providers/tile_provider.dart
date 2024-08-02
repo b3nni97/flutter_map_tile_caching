@@ -21,24 +21,16 @@ class FMTCTileProvider extends TileProvider {
   /// Defaults to a [HttpPlusClient] which supports HTTP/2 and falls back to a
   /// standard [IOClient]/[HttpClient] for HTTP/1.1 servers. Timeout is set to
   /// 5 seconds by default.
-  final BaseClient httpClient;
+  final Dio httpClient;
 
   FMTCTileProvider._({
     required this.storeDirectory,
     required FMTCTileProviderSettings? settings,
     Map<String, String> headers = const {},
-    BaseClient? httpClient,
+    Dio? httpClient,
   })  : settings =
             settings ?? FMTC.instance.settings.defaultTileProviderSettings,
-        httpClient = httpClient ??
-            HttpPlusClient(
-              http1Client: IOClient(
-                HttpClient()
-                  ..connectionTimeout = const Duration(seconds: 5)
-                  ..userAgent = null,
-              ),
-              connectionTimeout: const Duration(seconds: 5),
-            ),
+        httpClient = httpClient ?? Dio(),
         super(
           headers: {
             ...headers,

@@ -2,8 +2,10 @@
 // A full license can be found at .\LICENSE
 
 import 'dart:async';
+import 'dart:io';
 import 'dart:ui';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_map/plugin_api.dart';
@@ -145,9 +147,19 @@ class FMTCImageProvider extends ImageProvider<FMTCImageProvider> {
       final StreamedResponse response;
 
       try {
-        response = await provider.httpClient.send(
-          Request('GET', Uri.parse(networkUrl))
-            ..headers.addAll(provider.headers),
+        final dioResponse = await provider.httpClient.getUri(
+          Uri.parse(networkUrl),
+          options: Options(
+            headers: provider.headers,
+            responseType: ResponseType.stream,
+          ),
+        );
+
+        final dioResponseStream = (dioResponse.data as ResponseBody).stream;
+
+        response = StreamedResponse(
+          dioResponseStream,
+          dioResponse.statusCode ?? HttpStatus.ok,
         );
       } catch (_) {
         return finish(
