@@ -40,14 +40,6 @@ class FMTCTileProvider extends TileProvider {
           },
         );
 
-  /// Closes the open [httpClient] - this will make the provider unable to
-  /// perform network requests
-  @override
-  void dispose() {
-    httpClient.close();
-    super.dispose();
-  }
-
   /// Get a browsed tile as an image, paint it on the map and save it's bytes to
   /// cache for later (dependent on the [CacheBehavior])
   @override
